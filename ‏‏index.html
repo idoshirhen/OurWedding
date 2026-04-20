@@ -35,7 +35,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0;
+            padding: 1rem;
             line-height: 1.6;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -43,21 +43,17 @@
         }
         
         .container {
-            max-width: 100%;
+            max-width: 600px;
             width: 100%;
             background-color: var(--light);
-            border-radius: 0;
-            box-shadow: none;
-            padding: 2rem 1.5rem;
-            margin-bottom: 0;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
             text-align: center;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 1s forwards;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
         
         @keyframes fadeIn {
@@ -262,6 +258,13 @@
             opacity: 0;
         }
         
+        .date-location {
+            margin-top: 1rem;
+            font-style: italic;
+            color: var(--dark);
+            opacity: 0.8;
+        }
+        
         .rings-container {
             display: flex;
             justify-content: center;
@@ -293,6 +296,12 @@
             }
         }
         
+        .emoji-decoration {
+            font-size: 2rem;
+            margin: 1rem 0;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
         .couple-figures {
             display: flex;
             justify-content: center;
@@ -303,7 +312,6 @@
         .wedding-theme-header {
             position: relative;
             padding-top: 2rem;
-            margin-bottom: 1rem;
         }
         
         .wedding-theme-header:before,
@@ -353,12 +361,17 @@
         
         /* התאמות למובייל */
         @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+            }
+            
             .container {
-                padding: 1.5rem 1.25rem;
+                padding: 1.25rem;
+                border-radius: 15px;
             }
             
             h1 {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
             }
             
             .question {
@@ -381,21 +394,6 @@
             
             .celebration-icons {
                 font-size: 1.3rem;
-            }
-        }
-        
-        /* התאמה למסכים גדולים */
-        @media (min-width: 601px) {
-            body {
-                padding: 2rem 1rem;
-            }
-            
-            .container {
-                max-width: 600px;
-                border-radius: 20px;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-                margin-bottom: 2rem;
-                min-height: auto;
             }
         }
     </style>
