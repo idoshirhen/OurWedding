@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>חידון החתונה של עידו ועדן</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap');
+        
+        :root {
+            --primary: #d8b4fe;
+            --secondary: #f3e8ff;
+            --dark: #6b21a8;
+            --light: #ffffff;
+            --correct: #86efac;
+            --wrong: #fca5a5;
+            --gold: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--secondary);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            max-width: 100%;
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--light);
+            border-radius: 0;
+            box-shadow: none;
+            padding: 2rem 1.5rem;
+            margin-bottom: 0;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s forwards;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+            line-height: 1.4;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .welcome {
+            margin-bottom: 2rem;
+        }
+        
+        .welcome p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 300px;
+            touch-action: manipulation;
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .btn:hover {
+            background-color: var(--dark);
+            color: var(--light);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .question-container {
+            margin-bottom: 2rem;
+        }
+        
+        .question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .option {
+            background-color: var(--light);
+            border: 2px solid var(--primary);
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            text-align: right;
+            touch-action: manipulation;
+        }
+        
+        .option:active {
+            transform: scale(0.98);
+        }
+        
+        .option:hover {
+            background-color: var(--secondary);
+        }
+        
+        .option.selected {
+            background-color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .option.correct {
+            background-color: var(--correct);
+            border-color: green;
+        }
+        
+        .option.wrong {
+            background-color: var(--wrong);
+            border-color: red;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: var(--secondary);
+            border-radius: 10px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .score-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin: 1rem 0;
+        }
+        
+        .result-message {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d8b4fe'%3E%3Cpath d='M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z'/%3E%3C/svg%3E");
+            background-size: contain;
+            animation: float 6s linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background: #d8b4fe;
+            top: -10%;
+            opacity: 0;
+        }
+        
+        .rings-container {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        
+        .ring {
+            width: 40px;
+            height: 40px;
+            border: 5px solid var(--gold);
+            border-radius: 50%;
+            margin: 0 0.5rem;
+            animation: shine 3s infinite;
+            position: relative;
+        }
+        
+        .ring:first-child {
+            width: 30px;
+            height: 30px;
+            margin-top: 5px;
+        }
+        
+        @keyframes shine {
+            0%, 100% {
+                box-shadow: 0 0 5px var(--gold);
+            }
+            50% {
+                box-shadow: 0 0 20px var(--gold);
+            }
+        }
+        
+        .couple-figures {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+            font-size: 3rem;
+        }
+        
+        .wedding-theme-header {
+            position: relative;
+            padding-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .wedding-theme-header:before,
+        .wedding-theme-header:after {
+            content: "💍";
+            position: absolute;
+            top: 0;
+            font-size: 1.5rem;
+        }
+        
+        .wedding-theme-header:before {
+            right: 10px;
+        }
+        
+        .wedding-theme-header:after {
+            left: 10px;
+        }
+        
+        .celebration-icons {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.5rem 0;
+            font-size: 1.5rem;
+        }
+        
+        .perfect-score-celebration {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 1rem;
+        }
+        
+        .trophy {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 1s infinite alternate;
+        }
+        
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* התאמות למובייל */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.5rem 1.25rem;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .question {
+                font-size: 1.1rem;
+            }
+            
+            .option {
+                padding: 0.875rem;
+                font-size: 0.95rem;
+            }
+            
+            .btn {
+                padding: 0.875rem 1.25rem;
+                font-size: 0.95rem;
+            }
+            
+            .couple-figures {
+                font-size: 2.5rem;
+            }
+            
+            .celebration-icons {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* התאמה למסכים גדולים - desktop */
+        @media (min-width: 601px) {
+            body {
+                padding: 2rem 1rem;
+            }
+            
+            .container {
+                max-width: 600px;
+                min-height: auto;
+                border-radius: 20px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    <div class="confetti" id="confetti"></div>
+    
+    <div class="container" id="welcome-section">
+        <div class="wedding-theme-header">
+            <h1>ברוכים הבאים<br>לחידון החתונה של עידו ועדן</h1>
+        </div>
+        <div class="rings-container">
+            <div class="ring"></div>
+            <div class="ring"></div>
+        </div>
+        <div class="welcome">
+            <div class="couple-figures">
+                <span>👰</span>
+                <span>❤️</span>
+                <span>🤵</span>
+            </div>
+            <p>כמה טוב אתם מכירים את הזוג המאושר? 🥰</p>
+            <p>ענו על השאלות הבאות וגלו! 🔍</p>
+            <div class="celebration-icons">
+                <span>🎂</span>
+                <span>🥂</span>
+                <span>💝</span>
+                <span>🎊</span>
+            </div>
+            <button class="btn" id="start-btn">◀️ התחל את החידון</button>
+        </div>
+    </div>
+    
+    <div class="container hidden" id="quiz-section">
+        <div class="wedding-theme-header">
+            <h1>חידון החתונה</h1>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+        <div class="question-container" id="question-container"></div>
+        <button class="btn hidden" id="next-btn">◀️ השאלה הבאה</button>
+        <button class="btn hidden" id="submit-btn">סיים חידון 🏁</button>
+    </div>
+    
+    <div class="container hidden" id="results-section">
+        <div class="wedding-theme-header">
+            <h1>התוצאות שלך!</h1>
+        </div>
+        <div class="score-container">
+            <p>הניקוד שלך:</p>
+            <p class="score" id="final-score">0/10</p>
+            <div class="result-message" id="result-message"></div>
+            <div id="perfect-score-celebration" class="perfect-score-celebration hidden">
+                <div class="trophy">🏆</div>
+            </div>
+        </div>
+        <div class="celebration-icons">
+            <span>🎯</span>
+            <span>🎓</span>
+            <span>🎁</span>
+            <span>💯</span>
+        </div>
+        <button class="btn" id="restart-btn">נסה שוב 🔄</button>
+    </div>
+    
+    <script>
+        // שאלות החידון
+        const questions = [
+            {
+                question: "מתי עדן ועידו הכירו?",
+                options: ["2020", "2021", "2022"],
+                answer: 1
+            },
+            {
+                question: "איפה עדן ועידו הכירו?",
+                options: ["דרך חברים", "בעבודה", "באפליקצית היכרות"],
+                answer: 1
+            },
+            {
+                question: "מה התחביב מספר 1 של עידו?",
+                options: ["צילום", "כדורגל", "מחשב"],
+                answer: 1
+            },
+            {
+                question: "מה התחביב מספר 1 של עדן?",
+                options: ["לקרוא ספרים", "לצייר", "לנקות"],
+                answer: 0
+            },
+            {
+                question: "מה היה המקום של הדייט הראשון?",
+                options: ["בר", "פארק", "פיצה ברחוב"],
+                answer: 0
+            },
+            {
+                question: "מה הדבר הראשון שעדן כתבה לעידו בווטסאפ אי פעם?",
+                options: ["עידו זאת עדן רוצה מים?", "היי זאת עדן מהעבודה", "מה קורה? אתה הצלם?"],
+                answer: 0
+            },
+            {
+                question: "לאן הם טסו לראשונה יחד?",
+                options: ["פראג", "פריז", "טורקיה"],
+                answer: 1
+            },
+            {
+                question: "מה עדן אמרה שעידו כרע ברך והציע לה?",
+                options: ["מאמי? מה זה??", "מה אתה עושה??", "ברורררר !!!"],
+                answer: 0
+            },
+            {
+                question: "מי מבני הזוג נרדם ראשון?",
+                options: ["עדן", "עידו"],
+                answer: 1
+            },
+            {
+                question: "מי יותר עצבני כשהוא רעב?",
+                options: ["עדן", "עידו"],
+                answer: 1
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+        
+        const welcomeSection = document.getElementById('welcome-section');
+        const quizSection = document.getElementById('quiz-section');
+        const resultsSection = document.getElementById('results-section');
+        const questionContainer = document.getElementById('question-container');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const progressBar = document.getElementById('progress');
+        const finalScore = document.getElementById('final-score');
+        const resultMessage = document.getElementById('result-message');
+        const heartsContainer = document.getElementById('hearts');
+        const confettiContainer = document.getElementById('confetti');
+        const perfectScoreCelebration = document.getElementById('perfect-score-celebration');
+        
+        // התחלת החידון
+        startBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', nextQuestion);
+        submitBtn.addEventListener('click', showResults);
+        restartBtn.addEventListener('click', restartQuiz);
+        
+        // יצירת אפקט הלבבות
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+                heartsContainer.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 6000);
+            }, 300);
+        }
+        
+        // יצירת אפקט הקונפטי
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-piece');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 20 + 10 + 'px';
+                confetti.style.backgroundColor = getRandomColor();
+                confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+                
+                confettiContainer.appendChild(confetti);
+                
+                animateConfetti(confetti);
+            }
+        }
+        
+        function animateConfetti(confetti) {
+            const animation = confetti.animate([
+                { top: '-10%', opacity: 1 },
+                { top: '100%', opacity: 0 }
+            ], {
+                duration: Math.random() * 3000 + 2000,
+                easing: 'cubic-bezier(.68,-0.55,.27,1.55)'
+            });
+            
+            animation.onfinish = () => {
+                confetti.remove();
+            };
+        }
+        
+        function getRandomColor() {
+            const colors = ['#d8b4fe', '#e9d5ff', '#f3e8ff', '#c4b5fd', '#a78bfa', '#8b5cf6', '#ffd700', '#ffb6c1'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+        
+        // התחלת החידון
+        function startQuiz() {
+            welcomeSection.classList.add('hidden');
+            quizSection.classList.remove('hidden');
+            loadQuestion();
+            createHearts();
+        }
+        
+        // טעינת שאלה
+        function loadQuestion() {
+            selectedOption = null;
+            const question = questions[currentQuestion];
+            
+            let optionsHTML = '';
+            question.options.forEach((option, index) => {
+                optionsHTML += `<div class="option" data-index="${index}">${option}</div>`;
+            });
+            
+            questionContainer.innerHTML = `
+                <div class="question">${question.question}</div>
+                <div class="options">${optionsHTML}</div>
+            `;
+            
+            // עדכון התקדמות
+            progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
+            
+            // הוספת מאזינים לאפשרויות
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', selectOption);
+            });
+            
+            // הצגת כפתור המשך או סיום
+            nextBtn.classList.add('hidden');
+            if (currentQuestion === questions.length - 1) {
+                submitBtn.classList.remove('hidden');
+            } else {
+                submitBtn.classList.add('hidden');
+            }
+        }
+        
+        // בחירת תשובה
+        function selectOption(e) {
+            // מחיקת הבחירה הקודמת
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // הוספת סימון לאפשרות הנבחרת
+            e.target.classList.add('selected');
+            selectedOption = parseInt(e.target.dataset.index);
+            
+            // הצגת התשובה הנכונה
+            const options = document.querySelectorAll('.option');
+            const correctAnswer = questions[currentQuestion].answer;
+            
+            options.forEach((opt, index) => {
+                opt.classList.remove('correct', 'wrong');
+                if (index === correctAnswer) {
+                    opt.classList.add('correct');
+                    opt.innerHTML += ' ✅';
+                } else if (index === selectedOption) {
+                    if (selectedOption !== correctAnswer) {
+                        opt.classList.add('wrong');
+                        opt.innerHTML += ' ❌';
+                    }
+                }
+            });
+            
+            // בדיקה אם התשובה נכונה
+            if (selectedOption === questions[currentQuestion].answer) {
+                score++;
+            }
+            
+            // הסרת מאזיני לחיצה מהאפשרויות
+            options.forEach(opt => {
+                opt.removeEventListener('click', selectOption);
+            });
+            
+            // הצגת כפתור המשך
+            if (currentQuestion === questions.length - 1) {
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+            }
+        }
+        
+        // מעבר לשאלה הבאה
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+                nextBtn.classList.add('hidden');
+            } else {
+                showResults();
+            }
+        }
+        
+        // הצגת תוצאות
+        function showResults() {
+            quizSection.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+            finalScore.textContent = `${score}/${questions.length}`;
+            
+            // הודעה לפי הניקוד
+            if (score === questions.length) {
+                resultMessage.textContent = "מושלם! אתם מכירים את הזוג מצוין! 🌟";
+                createConfetti();
+                perfectScoreCelebration.classList.remove('hidden');
+            } else if (score >= questions.length / 2) {
+                resultMessage.textContent = "יפה מאוד! אתם מכירים את הזוג די טוב! 👍";
+            } else {
+                resultMessage.textContent = "יש לכם עוד מה ללמוד על הזוג! 📝";
+            }
+            
+            progressBar.style.width = `100%`;
+        }
+        
+        // התחלה מחדש
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            selectedOption = null;
+            resultsSection.classList.add('hidden');
+            quizSection.classList.remove('hidden');
+            perfectScoreCelebration.classList.add('hidden');
+            loadQuestion();
+        }
+    </script>
+</body>
+</html>
