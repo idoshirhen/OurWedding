@@ -18,8 +18,7 @@
             --correct: #bbf7d0;
             --wrong: #fecaca;
             --accent: #f472b6;
-            /* משתנה גובה שיעודכן על ידי JS */
-            --doc-height: 100%;
+            --screen-height: 100dvh;
         }
 
         * {
@@ -31,10 +30,9 @@
 
         html, body {
             width: 100vw;
-            height: var(--doc-height);
-            overflow: hidden;
-            position: fixed;
-            /* מונע מחוות גלילה של הדפדפן */
+            height: var(--screen-height);
+            overflow: hidden; 
+            position: fixed; 
             overscroll-behavior: none;
         }
 
@@ -94,7 +92,7 @@
             background: linear-gradient(to bottom, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            white-space: nowrap;
+            white-space: nowrap; 
         }
 
         .sub-title {
@@ -113,8 +111,8 @@
         }
 
         .option {
-            background: rgba(255, 255, 255, 0.18);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.18); 
+            border: 1px solid rgba(255, 255, 255, 0.4); 
             padding: 1.1rem;
             border-radius: 18px;
             cursor: pointer;
@@ -123,12 +121,13 @@
             transition: all 0.2s;
             text-align: right;
             margin-bottom: 0.8rem;
-            /* מונע בחירת טקסט בטעות במובייל */
+            /* מונע בחירת טקסט במובייל */
             user-select: none;
+            -webkit-user-select: none;
         }
 
-        .option.correct { background: var(--correct); color: #065f46; border-color: #059669; }
-        .option.wrong { background: var(--wrong); color: #991b1b; border-color: #dc2626; }
+        .option.correct { background: var(--correct) !important; color: #065f46 !important; border-color: #059669 !important; }
+        .option.wrong { background: var(--wrong) !important; color: #991b1b !important; border-color: #dc2626 !important; }
 
         .btn {
             background: var(--light);
@@ -217,13 +216,11 @@
     </div>
 
     <script>
-        // תיקון קריטי לגובה במובייל
-        const documentHeight = () => {
-            const doc = document.documentElement;
-            doc.style.setProperty('--doc-height', `${window.innerHeight}px`);
-        };
-        window.addEventListener('resize', documentHeight);
-        documentHeight();
+        // תיקון למניעת גלילה באייפון/מובייל
+        document.addEventListener('touchmove', function (e) {
+            if (e.target.closest('.container')) return;
+            e.preventDefault();
+        }, { passive: false });
 
         const questions = [
             { question: "מתי עדן ועידו הכירו?", options: ["2020", "2021", "2022"], answer: 1 },
@@ -247,12 +244,16 @@
         const nextBtn = document.getElementById('next-btn');
         const submitBtn = document.getElementById('submit-btn');
 
-        document.getElementById('start-btn').onclick = (e) => {
-            e.preventDefault();
+        // פונקציית לחיצה אחידה למובייל ומחשב
+        function handleInteraction(el, callback) {
+            el.addEventListener('click', callback);
+        }
+
+        handleInteraction(document.getElementById('start-btn'), () => {
             welcomeSection.classList.add('hidden');
             quizSection.classList.remove('hidden');
             loadQuestion();
-        };
+        });
 
         function loadQuestion() {
             const q = questions[currentQuestion];
@@ -267,7 +268,7 @@
                 const div = document.createElement('div');
                 div.className = 'option fade-in';
                 div.textContent = opt;
-                // שימוש במאזין אופטימלי למובייל
+                // הוספת מאזין לחיצה לכל אפשרות
                 div.onclick = (e) => {
                     e.preventDefault();
                     checkAnswer(i, div);
@@ -301,14 +302,12 @@
             }
         }
 
-        nextBtn.onclick = (e) => {
-            e.preventDefault();
+        handleInteraction(nextBtn, () => {
             currentQuestion++;
             loadQuestion();
-        };
+        });
 
-        submitBtn.onclick = (e) => {
-            e.preventDefault();
+        handleInteraction(submitBtn, () => {
             quizSection.classList.add('hidden');
             resultsSection.classList.remove('hidden');
             document.getElementById('final-score').textContent = `${score}/${questions.length}`;
@@ -321,12 +320,9 @@
             } else {
                 msg.textContent = "חמוד, אבל אולי כדאי לשבת איתם לקפה... 🥂";
             }
-        };
+        });
 
-        document.getElementById('restart-btn').onclick = (e) => {
-            e.preventDefault();
-            location.reload();
-        };
+        handleInteraction(document.getElementById('restart-btn'), () => location.reload());
     </script>
 </body>
 </html>
