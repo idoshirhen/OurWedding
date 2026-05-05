@@ -7,211 +7,223 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>חידון החתונה של עדן ועידו</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap');
         
         :root {
             --primary: #d8b4fe;
             --primary-dark: #a78bfa;
             --secondary: #f3e8ff;
-            --dark: #6b21a8;
+            --dark: #4c1d95;
             --light: #ffffff;
-            --correct: #86efac;
-            --wrong: #fca5a5;
-            --screen-height: 100dvh; 
-            /* משתנה עזר לגובה במובייל */
-            --vh: 1vh;
+            --correct: #bbf7d0;
+            --wrong: #fecaca;
+            --accent: #f472b6;
+            /* משתנה גובה שיעודכן על ידי JS */
+            --doc-height: 100%;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         html, body {
             width: 100vw;
-            /* שימוש בחישוב גובה דינמי למניעת תקיעות */
-            height: calc(var(--vh, 1vh) * 100);
+            height: var(--doc-height);
             overflow: hidden;
             position: fixed;
+            /* מונע מחוות גלילה של הדפדפן */
+            overscroll-behavior: none;
         }
-        
+
         body {
             font-family: 'Heebo', sans-serif;
-            background-color: var(--secondary);
-            color: var(--dark);
+            background: linear-gradient(180deg, #1a1033 0%, #4c1d95 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            overscroll-behavior: none;
+            color: var(--light);
         }
-        
+
+        .bg-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.15;
+            animation: move 15s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-30%, -30%); }
+            to { transform: translate(30%, 30%); }
+        }
+
         .container {
-            width: 100%;
-            height: 100%;
-            max-width: 500px;
-            background-color: var(--light);
+            width: 90%;
+            height: 85%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 30px;
             display: flex;
             flex-direction: column;
-            padding: 1.5rem;
+            padding: 2rem 1.2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             position: relative;
         }
 
-        .wedding-theme-header {
-            flex-shrink: 0;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 2.2rem; /* גודל מקורי */
-            line-height: 1.2;
-            font-weight: 800;
-            color: var(--dark);
-            margin-bottom: 0.5rem;
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .content-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 1rem 0;
-        }
+        .welcome-header { text-align: center; margin-bottom: 1.5rem; }
         
+        .main-title {
+            font-weight: 900;
+            font-size: 2.6rem;
+            background: linear-gradient(to bottom, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+        }
+
+        .sub-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-top: 5px;
+            color: var(--primary);
+        }
+
         .question {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
             text-align: center;
+            line-height: 1.2;
         }
-        
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        
+
         .option {
-            background-color: var(--light);
-            border: 2px solid var(--primary);
-            padding: 1rem;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 1.1rem;
+            border-radius: 18px;
             cursor: pointer;
             font-size: 1.15rem;
+            font-weight: 600;
+            transition: all 0.2s;
             text-align: right;
-            transition: background-color 0.2s;
-            /* ביטול בחירת טקסט בלחיצה ארוכה */
-            -webkit-user-select: none;
+            margin-bottom: 0.8rem;
+            /* מונע בחירת טקסט בטעות במובייל */
             user-select: none;
         }
-        
-        .option.correct { background-color: var(--correct); border-color: #059669; }
-        .option.wrong { background-color: var(--wrong); border-color: #dc2626; }
-        
-        .action-area {
-            flex-shrink: 0;
-            padding: 1rem 0;
-            min-height: 90px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+
+        .option.correct { background: var(--correct); color: #065f46; border-color: #059669; }
+        .option.wrong { background: var(--wrong); color: #991b1b; border-color: #dc2626; }
 
         .btn {
-            background-color: var(--primary);
+            background: var(--light);
             color: var(--dark);
             border: none;
-            padding: 1.1rem 2rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
+            padding: 1.1rem;
+            font-size: 1.3rem;
+            font-weight: 800;
+            border-radius: 20px;
             width: 100%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
         }
 
-        .btn.invisible {
-            opacity: 0;
-            pointer-events: none;
-        }
+        .btn:disabled { opacity: 0; pointer-events: none; }
 
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background-color: var(--secondary);
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-        
         .progress-bar {
-            height: 100%;
-            background-color: var(--primary-dark);
-            width: 0%;
-            transition: width 0.3s;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 10px;
+            transition: width 0.4s ease;
         }
 
         .hidden { display: none !important; }
 
         @media (max-height: 660px) {
-            h1 { font-size: 1.8rem; }
-            .question { font-size: 1.2rem; }
-            .option { padding: 0.8rem; font-size: 1.1rem; }
-            .container { padding: 1rem; }
+            .main-title { font-size: 2.1rem; }
+            .sub-title { font-size: 1.5rem; }
+            .container { padding: 1.5rem 1rem; }
         }
     </style>
 </head>
 <body>
-    
-    <div class="container" id="welcome-section">
-        <div class="wedding-theme-header">
-            <h1>חידון החתונה</h1>
-            <p style="font-size: 1.8rem; font-weight: 700; color: var(--primary-dark);">של עדן ועידו</p>
+    <div class="bg-blob"></div>
+
+    <div class="container fade-in" id="welcome-section">
+        <div class="welcome-header">
+            <h1 class="main-title">חידון החתונה</h1>
+            <p class="sub-title">של עדן ועידו</p>
         </div>
-        <div class="content-area" style="text-align: center;">
+        
+        <div style="text-align: center; flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
             <div style="font-size: 4rem; margin-bottom: 1rem;">🤵❤️👰</div>
-            <p style="font-size: 1.4rem; font-weight: 800;">מוכנים לבדוק את זה? 🔥</p>
-            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; font-size: 2rem;">
+            <p style="font-size: 1.5rem; font-weight: 800;">מוכנים לבדוק את זה? 🔥</p>
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 1.5rem; font-size: 1.8rem;">
                 <span>💍</span><span>🥂</span><span>🎊</span>
             </div>
         </div>
-        <div class="action-area">
-            <button class="btn" id="start-btn">התחל את החידון ◀️</button>
-        </div>
-    </div>
-    
-    <div class="container hidden" id="quiz-section">
-        <div class="progress-container">
-            <div class="progress-bar" id="progress"></div>
-        </div>
-        <div class="content-area" id="question-container"></div>
-        <div class="action-area">
-            <button class="btn invisible" id="next-btn">השאלה הבאה ◀️</button>
-            <button class="btn hidden" id="submit-btn">סיים חידון 🏁</button>
-        </div>
-    </div>
-    
-    <div class="container hidden" id="results-section">
-        <div class="wedding-theme-header">
-            <h1>התוצאות שלך!</h1>
-        </div>
-        <div class="content-area" style="text-align: center;">
-            <div id="final-score" style="font-size: 5rem; font-weight: 800; color: var(--dark);">0/10</div>
-            <p id="result-message" style="font-size: 1.4rem; font-weight: 700; padding: 0 1rem;"></p>
-        </div>
-        <div class="action-area">
-            <button class="btn" id="restart-btn">נסה שוב 🔄</button>
+
+        <div style="margin-top: auto;">
+            <button class="btn" id="start-btn">בואו נתחיל ✨</button>
         </div>
     </div>
 
+    <div class="container hidden" id="quiz-section">
+        <div style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px; font-weight: 600;">
+                <span id="current-count">שאלה 1</span>
+                <span>מתוך 10</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                <div class="progress-bar" id="progress" style="width: 10%;"></div>
+            </div>
+        </div>
+
+        <div id="quiz-content" style="flex-grow: 1;">
+            <div class="question" id="question-text"></div>
+            <div id="options-container"></div>
+        </div>
+
+        <div style="margin-top: auto; min-height: 80px; display: flex; align-items: center;">
+            <button class="btn" id="next-btn" disabled>השאלה הבאה ◀️</button>
+            <button class="btn hidden" id="submit-btn">סיום וסיכום 🏆</button>
+        </div>
+    </div>
+
+    <div class="container hidden" id="results-section">
+        <h1 class="main-title">התוצאה!</h1>
+        <div style="text-align: center; margin: auto 0;">
+            <div id="perfect-trophy" class="hidden" style="font-size: 4rem;">👑</div>
+            <div style="font-size: 1.2rem; opacity: 0.8;">הציון שלכם:</div>
+            <div id="final-score" style="font-size: 5rem; font-weight: 900; color: var(--primary);">0/10</div>
+            <p id="result-message" style="font-size: 1.4rem; font-weight: 700; padding: 0 1rem;"></p>
+        </div>
+        <button class="btn" id="restart-btn" style="margin-top: auto;">נסה שוב 🔄</button>
+    </div>
+
     <script>
-        // פונקציה לתיקון גובה במובייל - קריטי!
-        function resetHeight() {
-            let vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        }
-        window.addEventListener('resize', resetHeight);
-        resetHeight();
+        // תיקון קריטי לגובה במובייל
+        const documentHeight = () => {
+            const doc = document.documentElement;
+            doc.style.setProperty('--doc-height', `${window.innerHeight}px`);
+        };
+        window.addEventListener('resize', documentHeight);
+        documentHeight();
 
         const questions = [
             { question: "מתי עדן ועידו הכירו?", options: ["2020", "2021", "2022"], answer: 1 },
@@ -232,77 +244,89 @@
         const welcomeSection = document.getElementById('welcome-section');
         const quizSection = document.getElementById('quiz-section');
         const resultsSection = document.getElementById('results-section');
-        const questionContainer = document.getElementById('question-container');
         const nextBtn = document.getElementById('next-btn');
         const submitBtn = document.getElementById('submit-btn');
-        const progressBar = document.getElementById('progress');
 
-        document.getElementById('start-btn').addEventListener('click', () => {
+        document.getElementById('start-btn').onclick = (e) => {
+            e.preventDefault();
             welcomeSection.classList.add('hidden');
             quizSection.classList.remove('hidden');
             loadQuestion();
-        });
+        };
 
         function loadQuestion() {
             const q = questions[currentQuestion];
-            progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
+            document.getElementById('current-count').textContent = `שאלה ${currentQuestion + 1}`;
+            document.getElementById('progress').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            document.getElementById('question-text').textContent = q.question;
             
-            questionContainer.innerHTML = `
-                <div class="question">${q.question}</div>
-                <div class="options">
-                    ${q.options.map((opt, i) => `<div class="option" data-idx="${i}">${opt}</div>`).join('')}
-                </div>
-            `;
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
             
-            document.querySelectorAll('.option').forEach(opt => {
-                opt.addEventListener('click', function() {
-                    checkAnswer(parseInt(this.dataset.idx), this);
-                });
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option fade-in';
+                div.textContent = opt;
+                // שימוש במאזין אופטימלי למובייל
+                div.onclick = (e) => {
+                    e.preventDefault();
+                    checkAnswer(i, div);
+                };
+                container.appendChild(div);
             });
-
-            nextBtn.classList.add('invisible');
-            submitBtn.classList.add('hidden');
+            
+            nextBtn.disabled = true;
         }
 
         function checkAnswer(idx, el) {
-            const correct = questions[currentQuestion].answer;
-            const allOptions = document.querySelectorAll('.option');
-            
-            allOptions.forEach(opt => opt.style.pointerEvents = 'none');
-            
-            if (idx === correct) {
+            const q = questions[currentQuestion];
+            const opts = document.querySelectorAll('.option');
+            opts.forEach(o => o.style.pointerEvents = 'none');
+
+            if (idx === q.answer) {
                 el.classList.add('correct');
-                el.innerHTML += ' ✅';
+                el.innerHTML += ' ✨';
                 score++;
             } else {
                 el.classList.add('wrong');
                 el.innerHTML += ' ❌';
-                allOptions[correct].classList.add('correct');
-                allOptions[correct].innerHTML += ' ✅';
+                opts[q.answer].classList.add('correct');
             }
 
             if (currentQuestion < questions.length - 1) {
-                nextBtn.classList.remove('invisible');
+                nextBtn.disabled = false;
             } else {
-                nextBtn.classList.add('hidden'); 
                 submitBtn.classList.remove('hidden');
+                nextBtn.classList.add('hidden');
             }
         }
 
-        nextBtn.addEventListener('click', () => {
+        nextBtn.onclick = (e) => {
+            e.preventDefault();
             currentQuestion++;
             loadQuestion();
-        });
+        };
 
-        submitBtn.addEventListener('click', () => {
+        submitBtn.onclick = (e) => {
+            e.preventDefault();
             quizSection.classList.add('hidden');
             resultsSection.classList.remove('hidden');
             document.getElementById('final-score').textContent = `${score}/${questions.length}`;
             const msg = document.getElementById('result-message');
-            msg.textContent = score >= 7 ? "מצוין! אתם מכירים אותם הכי טוב שיש! 😍" : "חמוד, אבל יש מה לשפר... 🥂";
-        });
+            if(score === 10) {
+                msg.textContent = "מושלם! אתם מכירים אותם הכי טוב שיש! 😍";
+                document.getElementById('perfect-trophy').classList.remove('hidden');
+            } else if(score >= 7) {
+                msg.textContent = "מצוין! אתם חברים קרובים מאוד! ✨";
+            } else {
+                msg.textContent = "חמוד, אבל אולי כדאי לשבת איתם לקפה... 🥂";
+            }
+        };
 
-        document.getElementById('restart-btn').addEventListener('click', () => location.reload());
+        document.getElementById('restart-btn').onclick = (e) => {
+            e.preventDefault();
+            location.reload();
+        };
     </script>
 </body>
 </html>
