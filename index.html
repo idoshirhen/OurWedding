@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>חידון החתונה של עדן ועידו</title>
@@ -27,15 +27,12 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* השיטה הכי יציבה למניעת גלילה ותקיעות במובייל */
+        /* הגדרת גובה יציבה למובייל - 100dvh פותר את בעיית שורת הכתובת */
         html, body {
             width: 100%;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
+            height: 100dvh; 
             overflow: hidden;
-            overscroll-behavior: none;
+            background: #1a1033;
         }
 
         body {
@@ -79,6 +76,8 @@
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             position: relative;
             z-index: 10;
+            /* השורה הזו פותרת את באג הלחיצות (Touch) באייפון! */
+            transform: translateZ(0);
         }
 
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
@@ -113,7 +112,7 @@
             line-height: 1.2;
         }
 
-        /* הפכנו את האפשרות לכפתור אמיתי כדי שיעבוד מושלם בטאץ' */
+        /* כפתור תשובה */
         .option {
             display: block;
             width: 100%;
@@ -129,9 +128,8 @@
             transition: all 0.2s;
             text-align: right;
             margin-bottom: 0.8rem;
-            user-select: none;
-            -webkit-user-select: none;
-            appearance: none;
+            position: relative;
+            z-index: 20;
         }
 
         .option.correct { background: var(--correct) !important; color: #065f46 !important; border-color: #059669 !important; }
@@ -150,8 +148,9 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             cursor: pointer;
             font-family: inherit;
-            appearance: none;
             text-align: center;
+            position: relative;
+            z-index: 20;
         }
 
         .btn:disabled { opacity: 0; pointer-events: none; }
@@ -168,7 +167,7 @@
         @media (max-height: 660px) {
             .main-title { font-size: 2.1rem; }
             .sub-title { font-size: 1.5rem; }
-            .container { padding: 1.5rem 1rem; height: 90%; }
+            .container { padding: 1.5rem 1rem; }
         }
     </style>
 </head>
@@ -189,7 +188,7 @@
             </div>
         </div>
 
-        <div style="margin-top: auto;">
+        <div style="margin-top: auto; padding-bottom: 10px;">
             <button class="btn" id="start-btn">בואו נתחיל ✨</button>
         </div>
     </div>
@@ -210,7 +209,7 @@
             <div id="options-container"></div>
         </div>
 
-        <div style="margin-top: auto; min-height: 80px; display: flex; align-items: center;">
+        <div style="margin-top: auto; min-height: 80px; display: flex; align-items: center; padding-bottom: 10px;">
             <button class="btn hidden" id="next-btn">השאלה הבאה ◀️</button>
             <button class="btn hidden" id="submit-btn">סיום וסיכום 🏆</button>
         </div>
@@ -224,7 +223,9 @@
             <div id="final-score" style="font-size: 5rem; font-weight: 900; color: var(--primary);">0/10</div>
             <p id="result-message" style="font-size: 1.4rem; font-weight: 700; padding: 0 1rem;"></p>
         </div>
-        <button class="btn" id="restart-btn" style="margin-top: auto;">נסה שוב 🔄</button>
+        <div style="padding-bottom: 10px;">
+            <button class="btn" id="restart-btn" style="margin-top: auto;">נסה שוב 🔄</button>
+        </div>
     </div>
 
     <script>
@@ -250,6 +251,7 @@
         const nextBtn = document.getElementById('next-btn');
         const submitBtn = document.getElementById('submit-btn');
 
+        // קוד JS פשוט ונקי שעובד 100% בכל דפדפן נייד
         document.getElementById('start-btn').onclick = function() {
             welcomeSection.classList.add('hidden');
             quizSection.classList.remove('hidden');
@@ -266,7 +268,6 @@
             container.innerHTML = '';
             
             q.options.forEach((opt, i) => {
-                // יצירת אלמנט מסוג כפתור במקום דיב
                 const btn = document.createElement('button');
                 btn.className = 'option fade-in';
                 btn.textContent = opt;
