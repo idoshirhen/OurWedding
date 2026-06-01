@@ -316,13 +316,24 @@
             document.getElementById('final-score').textContent = `${score}/${questions.length}`;
             const msg = document.getElementById('result-message');
             if(score === 10) {
-                msg.textContent = "מושלם! אתם מכירים אותם הכי טוב שיש! 😍";
-                document.getElementById('perfect-trophy').classList.remove('hidden');
-            } else if(score >= 7) {
-                msg.textContent = "מצוין! אתם חברים קרובים מאוד! ✨";
-            } else {
-                msg.textContent = "חמוד, אבל אולי כדאי לשבת איתם לקפה... 🥂";
-            }
+    msg.textContent = "👑 10 מתוך 10! אתם כנראה בני המשפחה הקרובים... או שהצצתם בתשובות 😎";
+    document.getElementById('perfect-trophy').classList.remove('hidden');
+
+} else if(score >= 8) {
+    msg.textContent = "🔥 וואו! אתם מכירים את עדן ועידו כמעט כמו שהם מכירים אחד את השנייה!";
+
+} else if(score >= 5) {
+    msg.textContent = "🥂 עבודה יפה! אתם בהחלט מכירים את הזוג, אבל עוד יש מה ללמוד עליהם.";
+
+} else if(score >= 3) {
+    msg.textContent = "😅 לא רע בכלל! כנראה שבאתם לחגוג יותר מאשר ללמוד על הזוג.";
+
+} else if(score >= 1) {
+    msg.textContent = "😂 טוב... לפחות ניסיתם! עכשיו אתם יודעים על עדן ועידו קצת יותר מלפני החידון.";
+
+} else {
+    msg.textContent = "🤯 0 מתוך 10?! אפילו המלצרים ידעו יותר... מזל שבאתם לחתונה ולא למבחן!";
+}
         };
 
         document.getElementById('restart-btn').onclick = function() {
